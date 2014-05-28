@@ -1,0 +1,6 @@
+http://grouplens.org/datasets/movielens/
+
+GroupLens Research has collected and made available rating data sets from the MovieLens web site (http://movielens.org). The data sets were collected over various periods of time, depending on the size of the set. 
+
+Use£ºMovieLens 100k (ml-100k)
+100,000 ratings from 1000 users on 1700 movies.
