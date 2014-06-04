@@ -5,6 +5,7 @@ class UserBasedCF:
     def __init__(self,datafile = None):
         self.datafile = datafile
         self.readData()
+        self.splitData(3,47)
 
     def readData(self,datafile = None):
         """
@@ -76,10 +77,19 @@ class UserBasedCF:
             self.userSimBest.setdefault(u,dict())
             for v, cuv in related_users.items():
                 self.userSimBest[u][v] = cuv / math.sqrt(user_item_count[u] * user_item_count[v] * 1.0)
- 
-    def recommend(self,user,train = None):
-        
-        
+
+    def recommend(self,user,train = None,k = 8,nitem = 40):  #need to test
+        train = train or self.traindata
+        rank = dict()
+        interacted_items = train.get(user,{})
+        for v ,wuv in sorted(self.userSimBest[user].items(),key = lambda x : x[1],reverse = True)[0:k]:
+            for i , rvi in train[v].items():
+                if i in interacted_items:
+                    continue
+                rank.setdefault(i,0)
+                rank[i] += wuv
+        return dict(sorted(rank.items(),key = lambda x :x[1],reverse = True)[0:nitem])
+      
     def recallAndPrecision(self,train = None,test = None,k = 8,nitem = 10):
         """
         Get the recall and precision, the method is listed
@@ -100,7 +110,9 @@ class UserBasedCF:
         return (hit / (recall * 1.0),hit / (precision * 1.0))
 
     def coverage(self,train = None,test = None,k = 8,nitem = 10):
-
+        """
+        How to find the measuring standard?
+        """
         
     def popularity(self,train = None,test = None,k = 8,nitem = 10):
         """
@@ -113,7 +125,23 @@ class UserBasedCF:
             for item in items.keys():
                 item_popularity.setdefault(item,0)
                 item_popularity[item] += 1
-        """
-        to be continued...
-        """
-     
+        ret = 0
+        n = 0
+        for user in train.keys():
+            rank = self.recommend(user, train, k = k, nitem = nitem)
+            for item ,_ in rank.items():
+                ret += math.log(1+item_popularity[item])
+                n += 1
+        return ret / (n * 1.0)
+
+def testRecommend():
+
+
+def testUserBasedCF():
+
+
+if __name__ == "__main__":
+    #testRecommend()
+    #testUserBasedCF()
+
+    
