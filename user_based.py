@@ -40,8 +40,7 @@ class UserBasedCF:
         """
         One method of getting user similarity matrix
         """
-        train = train or self.traindata
-        self.userSim = dict()
+        
         for u in train.keys():
             for v in train.keys():
                 if u == v:
@@ -68,11 +67,9 @@ class UserBasedCF:
             for u in users:
                 user_item_count.setdefault(u,0)
                 user_item_count[u] += 1
-                for v in users:
-                    if u == v:continue
-                    count.setdefault(u,{})
-                    count[u].setdefault(v,0)
-                    count[u][v] += 1
+                # To be processed
+
+                
         for u ,related_users in count.items():
             self.userSimBest.setdefault(u,dict())
             for v, cuv in related_users.items():
@@ -113,6 +110,10 @@ class UserBasedCF:
         """
         How to find the measuring standard?
         """
+        train = train or self.traindata
+        test = test or self.testdata
+        recommend_items = set()
+        all_items  = set()
         
     def popularity(self,train = None,test = None,k = 8,nitem = 10):
         """
@@ -135,13 +136,24 @@ class UserBasedCF:
         return ret / (n * 1.0)
 
 def testRecommend():
-
+    ubcf = UserBasedCF('u.data')
+    ubcf.readData()
+    ubcf.splitData(4,100)
+    ubcf.userSimilarity()
+    user = "345"
+    rank = ubcf.recommend(user,k = 3)
 
 def testUserBasedCF():
-
-
+    cf = UserBasedCF('u.data')
+    cf.userSimilarityBest()
+    print ("%3s%20s%20s%20s%20s" % ('K',"recall",'precision','coverage','popularity'))
+    for k in [5,10,20,40,80,160]:
+        recall,precision = cf.recallAndPrecision( k = k)
+        coverage = cf.coverage(k = k)
+        popularity = cf.popularity(k = k)
+        print ("%3d%19.3f%%%19.3f%%%19.3f%%%20.3f" % (k,recall * 100,precision * 100,coverage * 100,popularity))
+         
 if __name__ == "__main__":
     #testRecommend()
-    #testUserBasedCF()
-
+    testUserBasedCF()
     
