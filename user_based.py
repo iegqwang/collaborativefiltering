@@ -40,7 +40,6 @@ class UserBasedCF:
         """
         One method of getting user similarity matrix
         """
-        
         for u in train.keys():
             for v in train.keys():
                 if u == v:
@@ -93,7 +92,7 @@ class UserBasedCF:
         """
         Get the recall and precision, the method is listed
         """
-        train  = train or self.traindata
+        train = train or self.traindata
         test = test or self.testdata
         hit = 0
         recall = 0
