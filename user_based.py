@@ -67,14 +67,16 @@ class UserBasedCF:
             for u in users:
                 user_item_count.setdefault(u,0)
                 user_item_count[u] += 1
-                # To be processed
-
-                
+                for v in users:
+                    if u == v:continue
+                    count.setdefault(u,{})
+                    count[u].setdefault(v,0)
+                    count[u][v] += 1
         for u ,related_users in count.items():
             self.userSimBest.setdefault(u,dict())
             for v, cuv in related_users.items():
                 self.userSimBest[u][v] = cuv / math.sqrt(user_item_count[u] * user_item_count[v] * 1.0)
-
+ 
     def recommend(self,user,train = None,k = 8,nitem = 40):  #need to test
         train = train or self.traindata
         rank = dict()
@@ -108,12 +110,19 @@ class UserBasedCF:
 
     def coverage(self,train = None,test = None,k = 8,nitem = 10):
         """
-        How to find the measuring standard?
+        Find the measuring standard
         """
         train = train or self.traindata
         test = test or self.testdata
         recommend_items = set()
         all_items  = set()
+        for user in train.keys():
+            for item in train[user].keys():
+                all_items.add(item)
+            rank = self.recommend(user, train, k = k, nitem = nitem)
+            for item,_ in rank.items():
+                recommend_items.add(item)
+        return len(recommend_items) / (len(all_items) * 1.0)
         
     def popularity(self,train = None,test = None,k = 8,nitem = 10):
         """
@@ -142,6 +151,11 @@ def testRecommend():
     ubcf.userSimilarity()
     user = "345"
     rank = ubcf.recommend(user,k = 3)
+    for i,rvi in rank.items():
+        # find the recommendation
+        items = ubcf.testdata.get(user,{})
+        record = items.get(i,0)
+        print ("%5s: %.4f--%.4f" %(i,rvi,record))
 
 def testUserBasedCF():
     cf = UserBasedCF('u.data')

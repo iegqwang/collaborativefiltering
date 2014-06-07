@@ -5,4 +5,4 @@ The program tries to realize the collaborative filtering algorithm based on the 
 Configuration
 OS: Windows 7 SP1
 Platform: Python version 3.3.4
-Data: REF-Dataset.txt
+Data: Please REF "Dataset.txt"
