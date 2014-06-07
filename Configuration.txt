@@ -2,6 +2,9 @@ Collaborative  filtering  is  the  most  widely  used  and  successful  technolo
 
 The program tries to realize the collaborative filtering algorithm based on the user.
 
+You can fork this project on my Github.
+(https://github.com/iegqwang/collaborativefiltering/)
+
 Configuration
 OS: Windows 7 SP1
 Platform: Python version 3.3.4
